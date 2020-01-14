@@ -143,10 +143,15 @@ handle_file() {
     $VERBOSE "skipping non-existent file $file"
   elif is_excluded "$dotfiles_subdir/$file" "$exclude_file_globs" "$include_file_globs"; then
     $VERBOSE "skipping excluded file $file"
-  elif [ -d "$file" ] && is_excluded "$dotfiles_subdir/$file" "$symlink_dirs_file_globs" "$mk_dirs_file_globs"; then
-    show_file "$file" "$dest_dir" "$dotfiles_dir" "$dotfiles_subdir" $dotted
   elif [ -d "$file" ]; then
-    show_dir "$file" "$dest_dir" "$dotfiles_dir" "$dotfiles_subdir" $dotted "$exclude_file_globs" "$include_file_globs" "$symlink_dirs_file_globs" "$mk_dirs_file_globs"
+    if ! is_metametafile "$dotfiles_dir" "$file"; then
+      if is_excluded "$dotfiles_subdir/$file" "$symlink_dirs_file_globs" "$mk_dirs_file_globs"; then
+        show_file "$file" "$dest_dir" "$dotfiles_dir" "$dotfiles_subdir" $dotted
+      else
+        show_dir "$file" "$dest_dir" "$dotfiles_dir" "$dotfiles_subdir" $dotted "$exclude_file_globs" "$include_file_globs" "$symlink_dirs_file_globs" "$mk_dirs_file_globs"
+      fi
+    fi
+
   else
     show_file "$file" "$dest_dir" "$dotfiles_dir" "$dotfiles_subdir" $dotted
   fi
@@ -157,6 +162,13 @@ is_metafile() {
   tag_portion="$(echo "$1" | sed -e 's/tag-.*/tag-/')"
 
   [ "x$host_portion" = 'xhost-' -o "x$tag_portion" = 'xtag-' -o "x$1" = "xhooks" -o "x$1" = "xtarget" ]
+}
+
+is_metametafile() {
+  host_portion="$(echo "$1" | sed -e 's/host-.*/host-/')"
+  tag_portion="$(echo "$1" | sed -e 's/tag-.*/tag-/')"
+
+  [ "$host_portion" != "$1" -o "$tag_portion" != "$1" -a "x$2" = "xhooks" ]
 }
 
 dotfiles_dir_excludes() {

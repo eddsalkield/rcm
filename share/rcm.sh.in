@@ -133,9 +133,26 @@ run_hooks() {
   local direction="$2"
   local hook_file
   local find_opts=
+  local hook_dirs=""
+
+  for dotfiles_dir in $DOTFILES_DIRS; do
+    hook_dirs="$hook_dirs $dotfiles_dir"
+    
+    host_files="$dotfiles_dir/host-$HOSTNAME"
+    if [ -d "$host_files" ]; then
+      hook_dirs="$hook_dirs $host_files"
+    fi
+
+    for tag in $tags; do
+      tag_files="$dotfiles_dir/tag-$tag"
+      if [ -d "$tag_files" ]; then
+        hook_dirs="$hook_dirs $tag_files"
+      fi
+    done
+  done
 
   if [ $RUN_HOOKS -eq 1 ]; then
-    for dotfiles_dir in $DOTFILES_DIRS; do
+    for dotfiles_dir in $hook_dirs; do
       dotfiles_dir=$(eval echo "$dotfiles_dir")
 
       hook_file="$dotfiles_dir/hooks/$when-$direction"

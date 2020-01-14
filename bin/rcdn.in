@@ -69,6 +69,7 @@ handle_command_line() {
 
   handle_common_flags rcup $version $verbosity
   hostname="$(determine_hostname "$hostname")"
+  HOSTNAME="$(determine_hostname "$hostname")"
 
   tags="${arg_tags:-$TAGS}"
   dotfiles_dirs="${dotfiles_dirs:-$DOTFILES_DIRS}"

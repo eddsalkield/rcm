@@ -19,6 +19,8 @@ TESTS = \
 	test/rcup-link-files-target.t \
 	test/rcup-link-files-target-trailing.t \
 	test/rcup-link-files-target-subst.t \
+	test/rcup-tag-host-hooks.t \
+	test/rcdn-tag-host-hooks.t \
 	test/lsrc-dotfiles-dirs.t \
 	test/lsrc-excludes.t \
 	test/lsrc-hostname.t \

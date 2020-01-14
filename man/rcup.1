@@ -170,11 +170,21 @@ are only installed when installing using the
 .Li git
 tag.
 .Pp
-Hooks go in a directory named
-.Pa hooks .
+Hooks go either in a directory named
+.Pa hooks ,
+or in a subdirectory named
+.Pa hooks
+within a
+.Pa host-
+or
+.Pa tag-
+directory.
 Two hooks are supported by
 .Nm rcup :
-pre-up and post-up. These go in files or directories with predictable filenames:
+pre-up and post-up. These go in files or directories with predictable filenames, so either:
+
+.Bl -enum -offset indent -compact
+.It
 .Pa $XDG_DATA_HOME/rcm/dotfiles/hooks/pre-up
 and
 .Pa $XDG_DATA_HOME/rcm/dotfiles/hooks/post-up ,
@@ -182,11 +192,43 @@ or
 .Pa $XDG_DATA_HOME/rcm/dotfiles/hooks/pre-up/*
 and
 .Pa $XDG_DATA_HOME/rcm/dotfiles/hooks/post-up/* .
-These files must be executable. They are run every time
+.It
+.Pa $XDG_DATA_HOME/rcm/dotfiles/host-*/hooks/pre-up
+and
+.Pa $XDG_DATA_HOME/rcm/dotfiles/host-*/hooks/post-up ,
+or
+.Pa $XDG_DATA_HOME/rcm/dotfiles/host-*/hooks/pre-up/*
+and
+.Pa $XDG_DATA_HOME/rcm/dotfiles/host-*/hooks/post-up/* .
+
+.It
+.Pa $XDG_DATA_HOME/rcm/dotfiles/tag-*/hooks/pre-up
+and
+.Pa $XDG_DATA_HOME/rcm/dotfiles/tag-*/hooks/post-up ,
+or
+.Pa $XDG_DATA_HOME/rcm/dotfiles/tag-*/hooks/pre-up/*
+and
+.Pa $XDG_DATA_HOME/rcm/dotfiles/tag-*/hooks/post-up/* .
+.El
+
+These files must be executable. They may be run every time
 .Nm
 is run, and therefore must be idempotent.
-.Pp
-Hooks will be executed one at a time, sorted alphabetically. For instance,
+
+Hooks within the main dotfiles directory are executed every time.
+
+Hooks within
+.Pa host-
+or
+.Pa tag-
+directories are only executed if the given hostname matches the
+.Pa host-
+directory, or if tags matching the
+.Pa tag-
+directories have been selected, respectively.
+
+Within their respective directories, hooks will be executed one at a time, sorted
+alphabetically. For instance,
 .Pa hooks/pre-up/animals
 will run before
 .Pa hooks/pre-up/aquariums ,
@@ -215,7 +257,8 @@ It is instructive to understand the process
 uses when synchronizing your rc files:
 .Bl -enum
 .It
-The pre-up hook is run.
+The pre-up hooks are run, alongside any within matching host- and tag-
+specific directories.
 .
 .It
 All non-host, non-tag files without a dot prefix are symlinked to the
@@ -256,7 +299,8 @@ or from
 .Xr rcrc 5 .
 .
 .It
-The post-up hook is run.
+The post-up hooks are run, alongside any within matching host- and tag-
+specific directories.
 .El
 .
 

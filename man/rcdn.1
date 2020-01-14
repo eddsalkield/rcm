@@ -36,19 +36,58 @@ listed in
 .Va COPY_ALWAYS
 the file is removed.
 .Pp
-The
-.Nm
-program will run hooks before and after removing files, if these hooks
-exist. Hooks are executable programs inside the dotfiles directory, with
-the following names:
-.Pa hooks/pre-down
+
+Two hooks are supported by
+.Nm rcdn :
+pre-down and post-down. These go in files or directories with predictable filenames, so either:
+
+.Bl -enum -offset indent -compact
+.It
+.Pa .dotfiles/hooks/pre-down
 and
-.Pa hooks/post-down .
-These hooks are run each time
+.Pa .dotfiles/hooks/post-down ,
+or
+.Pa .dotfiles/hooks/pre-down/*
+and
+.Pa .dotfiles/hooks/post-down/* .
+
+.It
+.Pa .dotfiles/host-*/hooks/pre-down
+and
+.Pa .dotfiles/host-*/hooks/post-down ,
+or
+.Pa .dotfiles/host-*/hooks/pre-down/*
+and
+.Pa .dotfiles/host-*/hooks/post-down/* .
+
+.It
+.Pa .dotfiles/tag-*/hooks/pre-down
+and
+.Pa .dotfiles/tag-*/hooks/post-down ,
+or
+.Pa .dotfiles/tag-*/hooks/pre-down/*
+and
+.Pa .dotfiles/tag-*/hooks/post-down/* .
+.El
+
+These files must be executable. They may be run every time
 .Nm
-is run and therefore must be idempotent.
-.Pp
-Hooks will be executed one at a time, sorted alphabetically. For instance,
+is run, and therefore must be idempotent.
+
+Hooks within the main dotfiles directory are executed every time.
+
+Hooks within
+.Pa host-
+or
+.Pa tag-
+directories are only executed if the given hostname matches the
+.Pa host-
+directory, or if tags matching the
+.Pa tag-
+directories have been selected, respectively.
+
+Within their respective directories, hooks will be executed one at a time, sorted
+alphabetically. For instance,
 .Pa hooks/pre-down/animals
 will run before
 .Pa hooks/pre-down/aquariums ,
