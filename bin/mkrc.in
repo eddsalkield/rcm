@@ -33,9 +33,23 @@ if [ $# -eq 0 ]; then
   show_help 64
 fi
 
-for DOTFILES_DIR in $DOTFILES_DIRS $DEFAULT_DOTFILES_DIR; do
-  break
-done
+if [ -z ${DOTFILES_DIRS+x} ]; then
+  notfound=true
+  for DOTFILES_DIR in $DEFAULT_DOTFILES_DIRS; do
+    if [ -d $DOTFILES_DIR ]; then
+      notfound=false
+      break
+    fi
+  done
+  if $notfound; then
+    arr=($DEFAULT_DOTFILES_DIRS)
+    DOTFILES_DIR=${arr[0]}
+  fi
+else
+  for DOTFILES_DIR in $DOTFILES_DIRS; do
+    break
+  done
+fi
 
 tag=
 hostname=

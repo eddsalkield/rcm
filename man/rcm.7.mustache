@@ -46,9 +46,20 @@ section below.
 .
 .Sh QUICK START FOR EXISTING DOTFILES DIRECTORIES
 This section is for those who already have an existing dotfiles
-directory; this directory is
-.Pa ~/.dotfiles ;
-the directory only contains rc files; and these rc filenames do not
+directory; this directory is now
+.Pa $XDG_DATA_HOME/rcm/dotfiles
+by default, which resolves to
+.Pa ~/.local/config/rcm/dotfiles
+if
+.Pa XDG_DATA_HOME
+is not set or empty.
+The legacy location of
+.Pa ~/.dotfiles
+is still seamlessly supported.
+For more information, see the
+.Sx FILES
+section below.
+This directory only contains rc files; and these rc filenames do not
 begin with a period. See the caveats below if this is not you.
 .Bl -enum
 .It
@@ -76,7 +87,7 @@ When necessary, add new rc files to the dotfiles directory with
 In the other direction, you can use
 .Xr rcup 1
 to create the symlinks from
-.Pa ~/.dotfiles
+.Pa $XDG_DATA_HOME/rcm/dotfiles
 to your home directory.
 .Pp
 .Dl rcup tigrc
@@ -101,17 +112,26 @@ rcm suite, and thus would result in nothing happening. The only option
 in this case is to rename all the files, for example by using a shell
 command like the following.
 .Pp
-.Dl find ~/.dotfiles -name '.*' -exec echo mv {} `echo {} | sed 's/\.//'` \;
+.Dl find $XDG_CONFIG_HOME/rcm/dotfiles -name '.*' -exec echo mv {} `echo {} | sed 's/\.//'` \;
 .Pp
-Note that this will break any existing symlinks. Those can be safely
+Note that this assumes XDG_CONFIG_HOME is set. If not, see the
+.Sx FILES
+section below.
+
+Note also that this will break any existing symlinks. Those can be safely
 removed using the
 .Xr rcdn 1
 command.
 .Pp
 .Dl rcdn -v
-.Ss COMMON PROBLEM: DOTFILES DIRECTORY NOT IN Pa ~/.dotfiles
+.Ss COMMON PROBLEM: DOTFILES DIRECTORY NOT IN A DEFAULT LOCATION
 This all assumes that your dotfiles directory is
-.Pa ~/.dotfiles .
+.Pa $XDG_CONFIG_HOME/rcm/dotfiles ,
+.Pa ~/.dotfiles ,
+or another default location as described in the
+.Sx FILES
+section below.
+
 If it is elsewhere and you do not want to move it you can use the
 .Fl d Ar DIR
 option to
@@ -156,12 +176,12 @@ Synchronize your home directory with
 .El
 .Pp
 This will give you a directory named
-.Pa ~/.dotfiles
+.Pa $XDG_DATA_HOME/rcm/dotfiles
 with your dotfiles in it. Your original dotfiles will be symlinks into
 this directory. For example,
 .Pa ~/.zshrc
 will be a symlink to
-.Pa ~/.dotfiles/zshrc .
+.Pa $XDG_DATA_HOME/rcm/dotfiles/zshrc .
 .
 .Sh TAGGED DOTFILES
 This suite becomes more powerful if you share your dotfiles directory
@@ -287,8 +307,47 @@ share tools and develop this further as a first-class entity. It is also
 our hope that a common set of tools will encourage others to share their
 dotfiles, too.
 .Sh FILES
-.Pa ~/.dotfiles
-.Pa ~/.rcrc
+rcm has two file locations: a dotfiles directory, and a configuration file (rcrc).
+
+Unless overridden by the
+.Ev RCRC
+environment variable, rcm searches for its configuration file (rcrc) in the following
+locations, in this order:
+.Bl -enum -offset indent -compact
+.It
+$XDG_CONFIG_HOME/rcm/rcrc
+.It
+$x/rcm/rcrc for each directory x in $XDG_CONFIG_DIRS
+.It
+~/.rcrc
+.El
+If unset or empty,
+.Sx $XDG_CONFIG_HOME
+defaults to
+.Sy ~/.config
+
+Unless overridden by the
+.Fl d Ar DIR
+option to
+.Xr rcup 1
+or
+.Ev DOTFILES_DIRS
+in
+.Xr rcrc 5 ,
+rcm searches for its dotfiles directory in the following locations, in this order:
+.Bl -enum -offset indent -compact
+.It
+$XDG_DATA_HOME/rcm/rcrc
+.It
+$x/rcm/rcrc for each directory x in $XDG_DATA_DIRS
+.It
+~/.rcrc
+.El
+If unset or empty,
+.Sx $XDG_DATA_HOME
+defaults to
+.Sy ~/.local/share
+
 .Sh SEE ALSO
 .Xr lsrc 1 ,
 .Xr mkrc 1 ,

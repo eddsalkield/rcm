@@ -162,12 +162,53 @@ when using an exclude pattern.
 .Sh ENVIRONMENT
 .Bl -tag -width ".Ev RCRC"
 .It Ev RCRC
-User configuration file. Defaults to
-.Pa ~/.rcrc .
+User configuration file. Overrides overrides the default locations as in section
+.Sx FILES
+below.
 .El
+
 .Sh FILES
-.Pa ~/.dotfiles
-.Pa ~/.rcrc
+rcm has two file locations: a dotfiles directory, and a configuration file (rcrc).
+
+Unless overridden by the
+.Ev RCRC
+environment variable, rcm searches for its configuration file (rcrc) in the following
+locations, in this order:
+.Bl -enum -offset indent -compact
+.It
+$XDG_CONFIG_HOME/rcm/rcrc
+.It
+$x/rcm/rcrc for each directory x in $XDG_CONFIG_DIRS
+.It
+~/.rcrc
+.El
+If unset or empty,
+.Sx $XDG_CONFIG_HOME
+defaults to
+.Sy ~/.config
+
+Unless overridden by the
+.Fl d Ar DIR
+option to
+.Xr rcup 1
+or
+.Ev DOTFILES_DIRS
+in
+.Xr rcrc 5 ,
+rcm searches for its dotfiles directory in the following locations, in this order:
+.Bl -enum -offset indent -compact
+.It
+$XDG_DATA_HOME/rcm/rcrc
+.It
+$x/rcm/rcrc for each directory x in $XDG_DATA_DIRS
+.It
+~/.rcrc
+.El
+If unset or empty,
+.Sx $XDG_DATA_HOME
+defaults to
+.Sy ~/.local/share
+
 .Sh SEE ALSO
 .Xr mkrc 1 ,
 .Xr rcdn 1 ,

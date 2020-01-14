@@ -9,6 +9,10 @@ dist_man_MANS = man/lsrc.1 man/mkrc.1 man/rcdn.1 man/rcup.1 man/rcrc.5 man/rcm.7
 dist_pkgdata_DATA = share/rcm.sh
 
 TESTS = \
+	test/rcrc-xdg-set.t \
+	test/rcrc-xdg-unset.t \
+	test/mkrc-xdg-dotfiles-set.t \
+	test/mkrc-xdg-dotfiles-unset.t \
 	test/lsrc-dotfiles-dirs.t \
 	test/lsrc-excludes.t \
 	test/lsrc-hostname.t \

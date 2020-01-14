@@ -15,9 +15,15 @@
 .Qc
 .Sm on
 .Sh DESCRIPTION
-The rcm dotfile manager can be configured using a
+The rcm dotfile manager can be configured using a file at
+.Pa $XDG_CONFIG_HOME/rcm/rcrc ,
+which defaults to 
+.Pa ~/.config/rcm/rcrc
+if 
+.Pa XDG_CONFIG_HOME
+is empty or not set, or a
 .Pa .rcrc
-file in your home directory. This location can be changed by setting the
+file in your home directory (legacy). This location can be changed by setting the
 .Pa RCRC
 environment variable. The format is POSIX shell. It is sourced in by the
 .Xr lsrc 1 ,
@@ -37,7 +43,7 @@ the source directories for dotfiles. The first in the list is the
 source to which dotfiles created using
 .Xr mkrc 1
 are installed. The default value is
-.Pa ~/.dotfiles
+.Pa $XDG_DATA_HOME/rcm/dotfiles
 .
 .It Va EXCLUDES
 a space-separated list of exclude patterns. Exclude patterns are
@@ -74,7 +80,22 @@ under the section
 .
 .El
 .Sh FILES
-.Pa ~/.rcrc
+Unless overridden by the
+.Ev RCRC
+environment variable, rcm searches for its configuration file (rcrc) in the following
+locations, in this order:
+.Bl -enum -offset indent -compact
+.It
+$XDG_CONFIG_HOME/rcm/rcrc
+.It
+$x/rcm/rcrc for each directory x in $XDG_CONFIG_DIRS
+.It
+~/.rcrc
+.El
+If unset or empty,
+.Sx $XDG_CONFIG_HOME
+defaults to
+.Sy ~/.config
 .Sh EXAMPLES
 .Dl COPY_ALWAYS="ssh/id_* weechat/* netrc"
 .Dl COPY_ALWAYS="*"

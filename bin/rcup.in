@@ -297,7 +297,7 @@ handle_command_line() {
 LS_ARGS=-F
 
 handle_command_line "$@"
-: ${DOTFILES_DIRS:=$DOTFILES_DIRS $DEFAULT_DOTFILES_DIR}
+: ${DOTFILES_DIRS:=$DOTFILES_DIRS $DEFAULT_DOTFILES_DIRS}
 
 run_hooks pre up
 
@@ -314,7 +314,7 @@ for dest_and_src in $dests_and_srcs; do
   src="$2"
   sigil="$3"
 
-  if is_nested "$dest"; then
+  if is_nested "$dest"; then	# This needs changing, since relies upon DEST_DIR
     handle_dir "$dest"
   fi
 

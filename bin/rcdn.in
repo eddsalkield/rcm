@@ -107,7 +107,7 @@ handle_command_line() {
 LS_ARGS=-F
 
 handle_command_line "$@"
-: ${DOTFILES_DIRS:=$DOTFILES_DIRS $DEFAULT_DOTFILES_DIR}
+: ${DOTFILES_DIRS:=$DOTFILES_DIRS $DEFAULT_DOTFILES_DIRS}
 
 run_hooks pre down
 

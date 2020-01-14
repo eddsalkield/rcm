@@ -1,6 +1,19 @@
-VERSION="@PACKAGE_VERSION@"
+VERSION="1.3.3"
 
 #set -x
+
+: ${XDG_CONFIG_HOME:=$HOME/.config}
+: ${XDG_DATA_HOME:=$HOME/.local/share}
+
+XDG_DOTFILES_DIRS="$XDG_DATA_HOME/rcm/dotfiles"
+for dir in ${XDG_DATA_DIRS//:/ }; do
+  XDG_DOTFILES_DIRS=$XDG_DOTFILES_DIRS" $dir/rcm/dotfiles"
+done
+
+XDG_RCRC_PATHS="$XDG_CONFIG_HOME/rcm/rcrc"
+for dir in ${XDG_CONFIG_DIRS//:/ }; do
+  XDG_RCRC_PATHS=$XDG_RCRC_PATHS" $dir/rcm/rcrc"
+done
 
 DEBUG=:
 DEST_DIR="$HOME"
@@ -8,7 +21,9 @@ PRINT=echo
 PROMPT=echo_n
 ERROR=echo_error
 VERBOSE=:
-DEFAULT_DOTFILES_DIR="$HOME/.dotfiles"
+DEFAULT_DOTFILES_DIRS="$XDG_DOTFILES_DIRS $HOME/.dotfiles"
+DEFAULT_DOTFILES_DIR="$XDG_DATA_HOME/rcm/dotfiles"
+DEFAULT_RCRC_PATHS="$XDG_RCRC_PATHS $HOME/.rcrc"
 MKDIR=mkdir
 INSTALL=rcup
 ROOT_DIR="$HOME"
@@ -167,8 +182,13 @@ decode() {
   echo "$file" | tr "$DELIMITER" " "
 }
 
-: ${RCRC:=$HOME/.rcrc}
-
 if [ -r "$RCRC" ]; then
   . "$RCRC"
+else
+  for RCRC in $DEFAULT_RCRC_PATHS; do
+    if [ -r "$RCRC" ]; then
+      . "$RCRC"
+      break
+    fi
+  done
 fi
