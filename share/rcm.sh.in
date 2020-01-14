@@ -16,7 +16,7 @@ for dir in ${XDG_CONFIG_DIRS//:/ }; do
 done
 
 DEBUG=:
-DEST_DIR="$HOME"
+TARGET="$HOME"
 PRINT=echo
 PROMPT=echo_n
 ERROR=echo_error
@@ -164,8 +164,8 @@ run_hooks() {
 
 de_dot() {
   $DEBUG "de_dot $1"
-  $DEBUG "  with DEST_DIR: $DEST_DIR"
-  echo "$1" | sed -e "s|$DEST_DIR/||" | sed -e 's/^\.//'
+  $DEBUG "  with TARGET: $TARGET"
+  echo "$1" | sed -e "s|$TARGET/||" | sed -e 's/^\.//'
 }
 
 DELIMITER="\a"
@@ -182,6 +182,21 @@ decode() {
   echo "$file" | tr "$DELIMITER" " "
 }
 
+get_target() {
+  while read line; do
+    line=$(echo "$line" | envsubst)
+    [ -z "$line" ] && continue
+    if [ -d $line ]; then
+      echo $line
+      return 0
+    fi
+  done 2> /dev/null < "$1/target"
+
+  if [ $? -ne 0 ]; then
+    echo $TARGET
+  fi
+}
+
 if [ -r "$RCRC" ]; then
   . "$RCRC"
 else
@@ -192,3 +207,4 @@ else
     fi
   done
 fi
+

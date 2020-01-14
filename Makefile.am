@@ -13,6 +13,12 @@ TESTS = \
 	test/rcrc-xdg-unset.t \
 	test/mkrc-xdg-dotfiles-set.t \
 	test/mkrc-xdg-dotfiles-unset.t \
+	test/rcup-target.t \
+	test/rcup-target-subst.t \
+	test/rcrc-target.t \
+	test/rcup-link-files-target.t \
+	test/rcup-link-files-target-trailing.t \
+	test/rcup-link-files-target-subst.t \
 	test/lsrc-dotfiles-dirs.t \
 	test/lsrc-excludes.t \
 	test/lsrc-hostname.t \
